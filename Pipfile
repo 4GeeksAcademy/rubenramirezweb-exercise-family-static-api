@@ -6,13 +6,13 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask = "*"
 psycopg2-binary = "*"
-flask-cors = "*"
 pytest = "*"
 mock = "*"
 pytest-testdox = "*"
 pytest-ordering = "*"
+flask = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.13"
