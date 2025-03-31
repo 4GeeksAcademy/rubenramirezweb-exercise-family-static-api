@@ -27,19 +27,19 @@ def sitemap():
 
 @app.route('/members', methods=['GET'])
 def get_all_members():
-    members = jackson_family.get_all_members()
-    return jsonify(members), 200
+    try:
+        members = jackson_family.get_all_members()
+        return jsonify(members), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
             
-
-# Obtener un miembro específico por ID
 @app.route('/members/<int:id>', methods=['GET'])
 def get_member(id):
     member = jackson_family.get_member(id)
     if member:
         return jsonify(member), 200
-    return jsonify({"message": "Miembro no encontrado"}), 404
+    return jsonify({"message": "Miembro no encontrado"}), 400
 
-# Agregar un nuevo miembro
 @app.route('/members', methods=['POST'])
 def add_member():
     data = request.json
