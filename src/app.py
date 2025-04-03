@@ -32,31 +32,35 @@ def get_all_members():
         return jsonify(members), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-            
-@app.route('/members/<int:id>', methods=['GET'])
+ 
+ # Obtiene un miembro de la familia           
+@app.route('/member/<int:id>', methods=['GET'])
 def get_member(id):
     member = jackson_family.get_member(id)
     if member:
         return jsonify(member), 200
-    return jsonify({"message": "Miembro no encontrado"}), 400
+    return jsonify({"message": "Miembro no encontrado"}), 404
 
-@app.route('/members', methods=['POST'])
+# Agrega un miembro a la familia
+@app.route('/member', methods=['POST'])
 def add_member():
-    data = request.json
+    data = request.get_json(silent=True)
     if not data.get("first_name") or not data.get("age") or not isinstance(data.get("lucky_numbers"), list):
         return jsonify({"message": "Datos incompletos o incorrectos"}), 400
+    
     new_member = jackson_family.add_member(data)
-    return jsonify(new_member), 201
+    return jsonify(new_member), 200
 
-# Eliminar un miembro por ID
-@app.route('/members/<int:id>', methods=['DELETE'])
+# Elimina un miembro de la familia por ID
+@app.route('/member/<int:id>', methods=['DELETE'])
 def delete_member(id):
-    if jackson_family.delete_member(id):
-        return jsonify({"message": "Miembro eliminado correctamente"}), 200
+    member_to_delete = jackson_family.delete_member(id)
+    if member_to_delete is True:
+        return jsonify({"done":member_to_delete}), 200
     return jsonify({"message": "Miembro no encontrado"}), 404
 
 # Actualizar datos de un miembro
-@app.route('/members/<int:id>', methods=['PUT'])
+@app.route('/member/<int:id>', methods=['PUT'])
 def update_member(id):
     updates = request.json
     updated_member = jackson_family.update_member(id, updates)
@@ -64,8 +68,12 @@ def update_member(id):
         return jsonify(updated_member), 200
     return jsonify({"message": "Miembro no encontrado"}), 404
 
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
 
 # this only runs if `$ python src/app.py` is executed
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+# if __name__ == '__main__':
+#     PORT = int(os.environ.get('PORT', 3000))
+#     app.run(host='0.0.0.0', port=PORT, debug=True)

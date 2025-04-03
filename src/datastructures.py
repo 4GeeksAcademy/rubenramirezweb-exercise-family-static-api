@@ -21,9 +21,10 @@ class FamilyStructure:
         generated_id = self.next_id
         self.next_id += 1
         return generated_id
-
+    
     def add_member(self, member):
-        member["id"] = self._generate_id()
+        if "id" not in member: # Aqui se verifica si el miembro no tiene un id, sino lo tiene...
+            member["id"] = self._generate_id() # se le agrega un id aqui.
         member["last_name"] = self.last_name  # Asegurar que todos sean Jackson
         self._members.append(member)
         return member
@@ -33,7 +34,7 @@ class FamilyStructure:
             if member["id"] == id:
                 self._members.remove(member)
                 return True
-        return False
+        return False 
 
     def get_member(self, id):
         for member in self._members:
